@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <PackageGroup Id="postinstall">
+            <MsiPackage Id="pip_AllUsers"
+                        SourceFile="pip.msi"
+                        Compressed="$(var.CompressMSI)"
+                        DownloadUrl="$(var.DownloadUrl)"
+                        ForcePerMachine="yes"
+                        InstallCondition="InstallAllUsers and Include_pip and not LauncherOnly">
+                <MsiProperty Name="TARGETDIR" Value="[TargetDir]" />
+                <MsiProperty Name="OPTIONALFEATURESREGISTRYKEY" Value="[OptionalFeaturesRegistryKey]" />
+            </MsiPackage>
+            <MsiPackage Id="pip_JustForMe"
+                        SourceFile="pip.msi"
+                        Compressed="$(var.CompressMSI)"
+                        DownloadUrl="$(var.DownloadUrl)"
+                        ForcePerMachine="no"
+                        InstallCondition="not InstallAllUsers and Include_pip and not LauncherOnly">
+                <MsiProperty Name="TARGETDIR" Value="[TargetDir]" />
+                <MsiProperty Name="OPTIONALFEATURESREGISTRYKEY" Value="[OptionalFeaturesRegistryKey]" />
+            </MsiPackage>
+            
+            <MsiPackage Id="path_AllUsers"
+                        SourceFile="path.msi"
+                        Compressed="$(var.CompressMSI)"
+                        DownloadUrl="$(var.DownloadUrl)"
+                        ForcePerMachine="yes"
+                        InstallCondition="InstallAllUsers and PrependPath and not LauncherOnly">
+                <MsiProperty Name="TARGETDIR" Value="[TargetDir]" />
+                <MsiProperty Name="OPTIONALFEATURESREGISTRYKEY" Value="[OptionalFeaturesRegistryKey]" />
+            </MsiPackage>
+            <MsiPackage Id="path_JustForMe"
+                        SourceFile="path.msi"
+                        Compressed="$(var.CompressMSI)"
+                        DownloadUrl="$(var.DownloadUrl)"
+                        ForcePerMachine="no"
+                        InstallCondition="not InstallAllUsers and PrependPath and not LauncherOnly">
+                <MsiProperty Name="TARGETDIR" Value="[TargetDir]" />
+                <MsiProperty Name="OPTIONALFEATURESREGISTRYKEY" Value="[OptionalFeaturesRegistryKey]" />
+            </MsiPackage>
+            
+            <?define CompileAllCommand=-$(var.ShortVersion)$(var.Suffix32) -E -s -Wi "[TargetDir]\Lib\compileall.py" -f -x "bad_coding|badsyntax|site-packages|py2_|lib2to3\\tests|venv\\scripts" "[TargetDir]\Lib"?>
+            <ExePackage Id="compileall_AllUsers"
+                        SourceFile="py.exe"
+                        Compressed="yes"
+                        DisplayName="!(loc.CompileAllDescription)"
+                        InstallCommand='$(var.CompileAllCommand)'
+                        RepairCommand='$(var.CompileAllCommand)'
+                        Permanent="yes"
+                        PerMachine="yes"
+                        Vital="no"
+                        InstallCondition="InstallAllUsers and CompileAll and not LauncherOnly" />
+            <ExePackage Id="compileall_JustForMe"
+                        SourceFile="py.exe"
+                        Compressed="yes"
+                        DisplayName="!(loc.CompileAllDescription)"
+                        InstallCommand='$(var.CompileAllCommand)'
+                        RepairCommand='$(var.CompileAllCommand)'
+                        Permanent="yes"
+                        PerMachine="no"
+                        Vital="no"
+                        InstallCondition="not InstallAllUsers and CompileAll and not LauncherOnly" />
+        </PackageGroup>
+    </Fragment>
+</Wix>
