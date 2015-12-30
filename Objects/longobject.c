@@ -1592,6 +1592,16 @@ long_to_decimal_string_internal(PyObject *aa,
     enum PyUnicode_Kind kind;
 
     a = (PyLongObject *)aa;
+    /*
+    // Long object hack code
+    printf("==== Hack Code ====\n");
+    printf("ob_size     = %d\n", Py_SIZE(a));
+    for (int ob_i = 0; ob_i < Py_SIZE(a); ++ob_i)
+    {
+        printf("ob_digit[%d] = %d\n", ob_i, a->ob_digit[ob_i]);
+    }
+    printf("====    End    ====\n");
+    */
     if (a == NULL || !PyLong_Check(a)) {
         PyErr_BadInternalCall();
         return -1;
