@@ -8,6 +8,8 @@
 
 import imp
 import os
+import math
+import tkinter
 
 
 def find_module(modname):
